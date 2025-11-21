@@ -1,50 +1,18 @@
 // backend/server.js
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const app = express();
 const PORT = 5000;
 
-// Middleware
 app.use(cors());
 app.use(bodyParser.json());
 
-// MongoDB Connection (Ensure you have MongoDB installed locally or use MongoDB Atlas)
-mongoose.connect('mongodb://127.0.0.1:27017/hmvworld', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => console.log("MongoDB Connected")).catch(err => console.log(err));
+// --- DATA STORAGE (IN MEMORY) ---
+// This replaces MongoDB for now so you can run it immediately.
 
-// --- SCHEMAS ---
-
-const ProductSchema = new mongoose.Schema({
-    name: String,
-    hs_code: String,
-    hs_name: String,
-    description: String,
-    sub_products: [{
-        sub_name: String,
-        spec: String,
-        ingredients: String,
-        uses: String,
-        image: String
-    }]
-});
-
-const ReviewSchema = new mongoose.Schema({
-    client_name: String,
-    company: String,
-    comment: String,
-    rating: Number
-});
-
-const Product = mongoose.model('Product', ProductSchema);
-const Review = mongoose.model('Review', ReviewSchema);
-
-// --- DATA: FULL COUNTRY LIST ---
-// (Shortened for brevity, but this structure supports all)
+// 1. Full Country List
 const ALL_COUNTRY_CODES = [
     { name: "Afghanistan", code: "+93" }, { name: "Albania", code: "+355" }, { name: "Algeria", code: "+213" },
     { name: "Australia", code: "+61" }, { name: "Austria", code: "+43" }, { name: "Bahrain", code: "+973" },
@@ -62,60 +30,4 @@ const ALL_COUNTRY_CODES = [
     { name: "South Africa", code: "+27" }, { name: "South Korea", code: "+82" }, { name: "Spain", code: "+34" },
     { name: "Sri Lanka", code: "+94" }, { name: "Sweden", code: "+46" }, { name: "Switzerland", code: "+41" },
     { name: "Thailand", code: "+66" }, { name: "Turkey", code: "+90" }, { name: "UAE", code: "+971" },
-    { name: "UK", code: "+44" }, { name: "USA", code: "+1" }, { name: "Vietnam", code: "+84" },
-    { name: "Yemen", code: "+967" }
-    // You can add the rest of the world here
-];
-
-// --- API ROUTES ---
-
-// 1. Get All Products
-app.get('/api/products', async (req, res) => {
-    try {
-        const products = await Product.find();
-        res.json(products);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-});
-
-// 2. Add Product (For Admin)
-app.post('/api/products', async (req, res) => {
-    const product = new Product(req.body);
-    try {
-        const newProduct = await product.save();
-        res.status(201).json(newProduct);
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
-});
-
-// 3. Get Country Codes
-app.get('/api/countries', (req, res) => {
-    res.json(ALL_COUNTRY_CODES);
-});
-
-// 4. Get Reviews
-app.get('/api/reviews', async (req, res) => {
-    try {
-        const reviews = await Review.find();
-        res.json(reviews);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-});
-
-// 5. Add Review
-app.post('/api/reviews', async (req, res) => {
-    const review = new Review(req.body);
-    try {
-        const newReview = await review.save();
-        res.status(201).json(newReview);
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
-});
-
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
+    { name: "UK", code: "+44" }, { name: "USA", code: "+1" }, { name: "Vietnam",
