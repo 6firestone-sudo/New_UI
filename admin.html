@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HMV Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white p-10 font-sans">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8 text-purple-400">HMV World Admin Dashboard</h1>
+
+        <div class="bg-slate-800 p-6 rounded-xl mb-10 border border-slate-700">
+            <h2 class="text-xl font-bold mb-4">Add New Main Product Category</h2>
+            <form id="addProductForm" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="text" id="p_name" placeholder="Product Name (e.g., Spices)" class="p-3 bg-slate-700 rounded w-full">
+                    <input type="text" id="p_hs_code" placeholder="HS Code" class="p-3 bg-slate-700 rounded w-full">
+                </div>
+                <input type="text" id="p_hs_name" placeholder="HS Name" class="p-3 bg-slate-700 rounded w-full">
+                <textarea id="p_desc" placeholder="Description" class="p-3 bg-slate-700 rounded w-full"></textarea>
+                
+                <div class="border-t border-slate-600 pt-4">
+                    <h3 class="font-semibold mb-2 text-sm text-gray-400">Add First Sub-Product (Required)</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="text" id="sub_name" placeholder="Sub Name (e.g., Black Pepper)" class="p-3 bg-slate-700 rounded w-full">
+                        <input type="text" id="sub_image" placeholder="Image URL" class="p-3 bg-slate-700 rounded w-full">
+                    </div>
+                    <input type="text" id="sub_spec" placeholder="Specification" class="p-3 bg-slate-700 rounded w-full mt-2">
+                    <input type="text" id="sub_ing" placeholder="Ingredients" class="p-3 bg-slate-700 rounded w-full mt-2">
+                    <input type="text" id="sub_uses" placeholder="Uses" class="p-3 bg-slate-700 rounded w-full mt-2">
+                </div>
+
+                <button type="submit" class="bg-purple-600 hover:bg-purple-500 text-white px-6 py-2 rounded font-bold">Add Product</button>
+            </form>
+        </div>
+
+        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+            <h2 class="text-xl font-bold mb-4">Add Customer Review</h2>
+            <form id="addReviewForm" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="text" id="r_name" placeholder="Client Name" class="p-3 bg-slate-700 rounded w-full">
+                    <input type="text" id="r_company" placeholder="Company (Optional)" class="p-3 bg-slate-700 rounded w-full">
+                </div>
+                <input type="number" id="r_rating" placeholder="Rating (1-5)" min="1" max="5" class="p-3 bg-slate-700 rounded w-full">
+                <textarea id="r_comment" placeholder="Client Comment" class="p-3 bg-slate-700 rounded w-full"></textarea>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded font-bold">Add Review</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+
+        document.getElementById('addProductForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                name: document.getElementById('p_name').value,
+                hs_code: document.getElementById('p_hs_code').value,
+                hs_name: document.getElementById('p_hs_name').value,
+                description: document.getElementById('p_desc').value,
+                sub_products: [{
+                    sub_name: document.getElementById('sub_name').value,
+                    image: document.getElementById('sub_image').value,
+                    spec: document.getElementById('sub_spec').value,
+                    ingredients: document.getElementById('sub_ing').value,
+                    uses: document.getElementById('sub_uses').value
+                }]
+            };
+
+            const res = await fetch(`${API_URL}/products`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            
+            if(res.ok) alert('Product Added!');
+            else alert('Error adding product');
+        });
+
+        document.getElementById('addReviewForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                client_name: document.getElementById('r_name').value,
+                company: document.getElementById('r_company').value,
+                rating: document.getElementById('r_rating').value,
+                comment: document.getElementById('r_comment').value
+            };
+
+            const res = await fetch(`${API_URL}/reviews`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if(res.ok) alert('Review Added!');
+            else alert('Error adding review');
+        });
+    </script>
+</body>
+</html>
