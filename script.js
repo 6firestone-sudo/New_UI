@@ -7,9 +7,10 @@ const EMAILJS_PUBLIC_KEY = '0CV0N42qYc1Rp59R8';
 const EMAILJS_SERVICE_ID = 'HMVWORLD_service';
 const EMAILJS_TEMPLATE_ID = 'Contactus';
 
+// Initialize EmailJS
 emailjs.init(EMAILJS_PUBLIC_KEY);
 
-// --- HARDCODED DATA (To make GitHub Pages work without a backend) ---
+// --- HARDCODED DATA (Required for GitHub Pages) ---
 
 const PRODUCTS_DATA = [
     { name: "Spices", hs_code: "0900", hs_name: "Spices, various types", description: "Aromatic and pungent vegetable substances used to flavor food.",
